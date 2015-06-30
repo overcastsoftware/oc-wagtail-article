@@ -47,7 +47,7 @@ class ArticleMixin(models.Model):
     author = models.ForeignKey(User, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
-    tags = TaggableManager(through=TaggedArticle)
+    tags = TaggableManager(through=TaggedArticle, blank=True)
     excerpt = RichTextField(blank=True, verbose_name=_('Excerpt'))
 
     class Meta:
