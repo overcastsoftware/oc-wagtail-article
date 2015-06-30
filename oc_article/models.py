@@ -7,6 +7,7 @@ from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore import blocks
 from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailimages.blocks import ImageChooserBlock
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailembeds.blocks import EmbedBlock
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel
 from wagtail.wagtailsnippets.edit_handlers import SnippetChooserPanel
@@ -19,8 +20,7 @@ from taggit.managers import TaggableManager
 
 
 class TaggedArticle(GenericTaggedItemBase):
-    tag = models.ForeignKey(Tag,
-                            related_name="%(app_label)s_%(class)s_items")
+    tag = models.ForeignKey(Tag, related_name="%(app_label)s_%(class)s_items")
 
 class Category(models.Model):
     title = models.CharField(max_length=255, db_index=True, verbose_name=_('Title'))
@@ -69,9 +69,18 @@ class Article(Page, ArticleMixin):
     Basic article with a rich text editor for body.
     """
     body = RichTextField(blank=True)
+    header_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
 
 
 Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+    ImageChooserPanel('header_image'),
     FieldPanel('body'),
 ]
 
