@@ -15,12 +15,16 @@ from wagtail.wagtailsnippets.models import register_snippet
 
 from oc_core.panels import ColorFieldPanel
 
-from taggit.models import Tag, GenericTaggedItemBase
+from taggit.models import Tag, TaggedItemBase
 from taggit.managers import TaggableManager
+from modelcluster.fields import ParentalKey
+from modelcluster.tags import ClusterTaggableManager
 
+class ArticleTag(TaggedItemBase):
+    content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
 
-class ArticleTag(GenericTaggedItemBase):
-    tag = models.ForeignKey(Tag, related_name="%(app_label)s_%(class)s_items")
+class BlockArticleTag(TaggedItemBase):
+    content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
 
 class Category(models.Model):
     title = models.CharField(max_length=255, db_index=True, verbose_name=_('Title'))
@@ -48,7 +52,6 @@ class ArticleMixin(models.Model):
     date = models.DateField(null=True, blank=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
     excerpt = RichTextField(blank=True, verbose_name=_('Excerpt'))
-    tags = TaggableManager(through=ArticleTag)
 
     class Meta:
         abstract = True
@@ -60,7 +63,6 @@ BASE_ARTICLE_CONTENT_PANELS = [
         FieldPanel('date', classname="col6"),
     ], "Author and date"),
     SnippetChooserPanel('category', Category),
-    FieldPanel('tags'),
     FieldPanel('excerpt'),
 ]
 
@@ -68,6 +70,7 @@ class Article(Page, ArticleMixin):
     """
     Basic article with a rich text editor for body.
     """
+    tags = ClusterTaggableManager(through=ArticleTag, blank=True)
     body = RichTextField(blank=True)
     header_image = models.ForeignKey(
         'wagtailimages.Image',
@@ -80,6 +83,7 @@ class Article(Page, ArticleMixin):
 
 
 Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+    FieldPanel('tags'),
     ImageChooserPanel('header_image'),
     FieldPanel('body'),
 ]
@@ -90,6 +94,7 @@ class BlockArticle(Page, ArticleMixin):
     Article built with multiple types of blocks.
     Blocks can be repeated and/or combined in any way.
     """
+    tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
     body = StreamField([
         ('image_block', blocks.ListBlock(blocks.StructBlock([
             ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
@@ -108,6 +113,7 @@ class BlockArticle(Page, ArticleMixin):
 
 
 BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+    FieldPanel('tags'),
     StreamFieldPanel('body'),
 ]
 
