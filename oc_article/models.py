@@ -19,7 +19,7 @@ from taggit.models import Tag, GenericTaggedItemBase
 from taggit.managers import TaggableManager
 
 
-class TaggedArticle(GenericTaggedItemBase):
+class ArticleTag(GenericTaggedItemBase):
     tag = models.ForeignKey(Tag, related_name="%(app_label)s_%(class)s_items")
 
 class Category(models.Model):
@@ -44,11 +44,11 @@ register_snippet(Category)
 
 
 class ArticleMixin(models.Model):
-    author = models.ForeignKey(User, null=True, blank=True)
+    author = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date = models.DateField(null=True, blank=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
-    tags = TaggableManager(through=TaggedArticle, blank=True)
     excerpt = RichTextField(blank=True, verbose_name=_('Excerpt'))
+    tags = TaggableManager(through=ArticleTag)
 
     class Meta:
         abstract = True
