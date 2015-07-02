@@ -97,19 +97,24 @@ class BlockArticle(Page, ArticleMixin):
     """
     tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
     body = StreamField([
-        ('image_block', blocks.ListBlock(blocks.StructBlock([
-            ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
-            ('caption', blocks.CharBlock(required=True)),
-            ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image')), required=True)),
-        ], icon=''))),
-        ('paragraph', blocks.RichTextBlock()),
-        ('blockquote', blocks.CharBlock(classname="full blockquote")),
-        ('fullimage', ImageChooserBlock()),
-        ('video_block', blocks.ListBlock(blocks.StructBlock([
-            ('video', EmbedBlock(required=True)),
-            ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
-        ], icon=''))),
-        ('html', blocks.RawHTMLBlock(classname="full title")),
+        ('image_block', blocks.StructBlock([
+            ('images', blocks.ListBlock(blocks.StructBlock([
+                ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
+                ('caption', blocks.CharBlock(required=True)),
+                ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image')), required=True)),
+            ]))),
+            ('block_classes', blocks.CharBlock()),
+        ])),
+        ('paragraph_block', blocks.StructBlock([
+            ('paragraph', blocks.RichTextBlock()),
+            ('block_classes', blocks.CharBlock()),
+        ])),
+        ('blockquote_block', blocks.StructBlock([
+            ('blockquote', blocks.CharBlock(classname="full blockquote")),
+            ('block_classes', blocks.CharBlock()),
+        ])),
+        ('html', blocks.RawHTMLBlock()),
+        ('embed', EmbedBlock()),
     ])
 
 
