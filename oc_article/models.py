@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
-from django.db import models, transaction
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.text import slugify
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore import blocks
@@ -15,16 +14,18 @@ from wagtail.wagtailsnippets.models import register_snippet
 
 from oc_core.panels import ColorFieldPanel
 
-from taggit.models import Tag, TaggedItemBase
-from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
+
 
 class ArticleTag(TaggedItemBase):
     content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
 
+
 class BlockArticleTag(TaggedItemBase):
-    content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
+    content_object = ParentalKey('BlockArticle', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
+
 
 class Category(models.Model):
     title = models.CharField(max_length=255, db_index=True, verbose_name=_('Title'))
@@ -66,6 +67,7 @@ BASE_ARTICLE_CONTENT_PANELS = [
     FieldPanel('excerpt'),
 ]
 
+
 class Article(Page, ArticleMixin):
     """
     Basic article with a rich text editor for body.
@@ -79,7 +81,6 @@ class Article(Page, ArticleMixin):
         on_delete=models.SET_NULL,
         related_name='+'
     )
-
 
 
 Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
@@ -99,7 +100,7 @@ class BlockArticle(Page, ArticleMixin):
         ('image_block', blocks.ListBlock(blocks.StructBlock([
             ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
             ('caption', blocks.CharBlock(required=True)),
-            ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'),('content_image', 'Content image')), required=True)),
+            ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image')), required=True)),
         ], icon=''))),
         ('paragraph', blocks.RichTextBlock()),
         ('blockquote', blocks.CharBlock(classname="full blockquote")),
@@ -116,4 +117,3 @@ BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('tags'),
     StreamFieldPanel('body'),
 ]
-
