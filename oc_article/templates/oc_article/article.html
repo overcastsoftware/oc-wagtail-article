@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+
+{% block content %}
+<article>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="article headerimage">
+				{% image self.article.header_image fill-1920x1080-c100 as imagedata %}
+	   			<img src="{{ imagedata.url }}">
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-4 col-sm-10 col-sm-offset-2">
+				<h1>{{self.title}}</h1>
+				{{self.body|richtext}}
+			</div>
+		</div>
+	</div>
+</article>
+{% endblock %}
