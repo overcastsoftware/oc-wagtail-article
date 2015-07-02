@@ -1,0 +1,9 @@
+{% load wagtailimages_tags %}
+<ul>
+{% for article in articles %}
+	<li><h2>{{ article.title }}</h2>
+	{% image article.header_image fill-120x120-c100 %}
+	<p>{{ article.body|truncatewords_html:100|striptags }}</p>
+	</li>
+{% endfor %}
+</ul>

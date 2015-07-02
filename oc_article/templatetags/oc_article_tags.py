@@ -1,5 +1,8 @@
 from django import template
 
+from wagtail.wagtailcore.models import Page
+from oc_article.models import Article
+
 register = template.Library()
 
 
@@ -48,3 +51,11 @@ def parse_csv_as_table(table_data, table_caption, table_header_row,
     html += '</table>'
 
     return html
+
+
+@register.inclusion_tag('oc_article/latest_articles.html')
+def latest_articles(category_slug, order='-first_published_at', count=5):
+    pages = Article.objects.filter(category__slug=category_slug).order_by(order)[:count]
+    return {
+        'articles': [p.specific for p in pages]
+    }
