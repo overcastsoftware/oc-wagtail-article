@@ -19,6 +19,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 
 
+
 class ArticleTag(TaggedItemBase):
     content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
 
@@ -100,21 +101,28 @@ class BlockArticle(Page, ArticleMixin):
         ('image_block', blocks.StructBlock([
             ('images', blocks.ListBlock(blocks.StructBlock([
                 ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
-                ('caption', blocks.CharBlock(required=True)),
+                ('caption', blocks.CharBlock(required=False)),
                 ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image')), required=True)),
             ]))),
-            ('block_classes', blocks.CharBlock()),
-        ])),
+            ('block_classes', blocks.CharBlock(required=False)),
+        ], icon='image')),
         ('paragraph_block', blocks.StructBlock([
             ('paragraph', blocks.RichTextBlock()),
-            ('block_classes', blocks.CharBlock()),
-        ])),
+            ('block_classes', blocks.CharBlock(required=False)),
+        ], icon='bold')),
         ('blockquote_block', blocks.StructBlock([
             ('blockquote', blocks.CharBlock(classname="full blockquote")),
-            ('block_classes', blocks.CharBlock()),
-        ])),
+            ('block_classes', blocks.CharBlock(required=False)),
+        ], icon='openquote')),
         ('html', blocks.RawHTMLBlock()),
-        ('embed', EmbedBlock()),
+        ('embed', EmbedBlock(icon='media')),
+        ('table_block', blocks.StructBlock([
+            ('table', blocks.TextBlock(rows=10, help_text=_(u'Enter your table as comma separated values, one line for each row.'))),
+            ('caption', blocks.CharBlock()),
+            ('header_row', blocks.BooleanBlock(required=False, help_text=_(u'Render first row as header if checked'))),
+            ('header_column', blocks.BooleanBlock(required=False, help_text=_(u'Render first column as header if checked'))),
+            ('block_classes', blocks.CharBlock()),
+        ]))
     ])
 
 

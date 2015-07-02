@@ -1,0 +1,92 @@
+{% load wagtailcore_tags wagtailimages_tags static oc_article_tags %}
+
+<section>
+{% for block in self.body %}
+    {% if block.block_type == 'paragraph_block' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 {{block.value.block_classes }}">
+                {{ block.value.paragraph|richtext }}
+            </div>
+        </div>
+    </div>
+    {% elif block.block_type == 'table_block' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 {{block.value.block_classes }}">
+                {% with block.value as b %}
+                {% parse_csv_as_table b.table b.caption b.header_row b.header_column separator=',' %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    {% elif block.block_type == 'embed' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 {{block.value.block_classes }}">
+                {{ block.value }}
+            </div>
+        </div>
+    </div>
+    {% elif block.block_type == 'blockquote_block' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 {{ block.value.block_classes }} blockquote">
+                {{ block.value.blockquote|richtext }}
+            </div>
+        </div>
+    </div>
+    {% elif block.block_type == 'image_block' %}
+        {% ifequal block.value.images|length 1 %}
+            {% for imgblock in block.value.images %}
+                {% if imgblock.image_type == 'header_image' %}
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% image imgblock.image fill-1920x693-c100 as sectionimagedata %}
+                            {% image imgblock.image fill-480x288-c100 as sectionimagedata_xs %}
+                            <img src="{{ sectionimagedata.url }}" alt="{{ sectionimagedata.alt }}" title="{{ sectionimagedata.caption }}" class="image-hero hidden-xs" />
+                            <div class="caption hidden-xs">
+                                <div class="vertical-center">{{ imgblock.caption|safe }}</div>
+                            </div>
+                            <img src="{{ sectionimagedata_xs.url }}" alt="{{ sectionimagedata_xs.alt }}" title="{{ sectionimagedata_xs.caption }}" class="image-hero visible-xs-block" />
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="{{ block.value.block_classes }}">
+                                {% image imgblock.image max-775x775 as sectionimagedata %}
+                                <img src="{{ sectionimagedata.url }}" alt="{{ sectionimagedata.alt }}" title="{{ sectionimagedata.caption }}" />
+                                <div class="caption">{{ imgblock.caption }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="container">
+                <div class="row">
+                    <div class="{{block.value.block_classes }}">
+                        <ul>
+                        {% for imgblock in block.value.images %}
+                            {% image imgblock.image fill-800x600-c100 as sectionimagedata %}
+                            <li>
+                                <img src="{{ sectionimagedata.url }}" alt="{{ sectionimagedata.alt }}" title="{{ sectionimagedata.caption }}" />
+                                <div class="image-caption">{{ imgblock.caption }}</div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endifequal %}
+    {% elif block.block_type == 'html' %}
+    <div class="container">
+        <div class="row">
+            {{ block.value|safe }}
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+</section>
+
