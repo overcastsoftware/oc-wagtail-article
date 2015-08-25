@@ -19,7 +19,6 @@ from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 
 
-
 class ArticleTag(TaggedItemBase):
     content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
 
@@ -39,6 +38,9 @@ class Category(models.Model):
         ColorFieldPanel('color', classname="col6 colorpicker-field"),
     ]
 
+    def get_children(self):
+        return 
+
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
@@ -54,6 +56,7 @@ class ArticleMixin(models.Model):
     date = models.DateField(null=True, blank=True)
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
     excerpt = RichTextField(blank=True, verbose_name=_('Excerpt'))
+    subtitle = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         abstract = True
