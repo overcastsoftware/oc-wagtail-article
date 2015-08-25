@@ -63,6 +63,7 @@ class ArticleMixin(models.Model):
 
 BASE_ARTICLE_CONTENT_PANELS = [
     FieldPanel('title'),
+    FieldPanel('subtitle'),
     MultiFieldPanel([
         FieldPanel('author', classname="col6"),
         FieldPanel('date', classname="col6"),
