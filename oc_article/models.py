@@ -97,7 +97,7 @@ Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('body'),
 ]
 
-Article.settings_panels = Page.settings_panel + [
+Article.settings_panels = Page.settings_panels + [
     FieldPanel('styles_override'),
 ]
 
@@ -147,7 +147,7 @@ BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     StreamFieldPanel('body'),
 ]
 
-Article.settings_panels = Page.settings_panel + [
+Article.settings_panels = Page.settings_panels + [
     FieldPanel('styles_override'),
 ]
 
