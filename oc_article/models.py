@@ -11,6 +11,8 @@ from wagtail.wagtailembeds.blocks import EmbedBlock
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, StreamFieldPanel, MultiFieldPanel
 from wagtail.wagtailsnippets.edit_handlers import SnippetChooserPanel
 from wagtail.wagtailsnippets.models import register_snippet
+from wagtail.wagtailsearch import index
+
 
 from oc_core.panels import ColorFieldPanel
 
@@ -94,6 +96,11 @@ Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('body'),
 ]
 
+Article.search_fields = Page.search_fields + (
+    index.SearchField('subtitle'),
+    index.SearchField('body'),
+)
+
 
 class BlockArticle(Page, ArticleMixin):
     """
@@ -134,3 +141,8 @@ BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('tags'),
     StreamFieldPanel('body'),
 ]
+
+BlockArticle.search_fields = Page.search_fields + (
+    index.SearchField('subtitle'),
+    index.SearchField('body'),
+)
