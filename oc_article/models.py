@@ -59,6 +59,7 @@ class ArticleMixin(models.Model):
     category = models.ForeignKey('Category', null=True, blank=True, on_delete=models.SET_NULL)
     excerpt = RichTextField(blank=True, verbose_name=_('Excerpt'))
     subtitle = models.CharField(max_length=255, null=True, blank=True)
+    styles_override = models.TextField(null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -94,6 +95,10 @@ Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('tags'),
     ImageChooserPanel('header_image'),
     FieldPanel('body'),
+]
+
+Article.settings_panels = Page.settings_panel + [
+    FieldPanel('styles_override'),
 ]
 
 Article.search_fields = Page.search_fields + (
@@ -140,6 +145,10 @@ class BlockArticle(Page, ArticleMixin):
 BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
     FieldPanel('tags'),
     StreamFieldPanel('body'),
+]
+
+Article.settings_panels = Page.settings_panel + [
+    FieldPanel('styles_override'),
 ]
 
 BlockArticle.search_fields = Page.search_fields + (
