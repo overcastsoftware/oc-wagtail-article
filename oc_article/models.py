@@ -78,18 +78,10 @@ BASE_ARTICLE_CONTENT_PANELS = [
 ]
 
 
-class BaseArticle(Page, ArticleMixin):
+class Article(Page, ArticleMixin):
     """
     Basic article with a rich text editor for body.
     """
-
-    class Meta:
-        abstract = True
-
-
-
-
-class Article(BaseArticle):
     tags = ClusterTaggableManager(through=ArticleTag, blank=True)
     body = RichTextField(blank=True)
     header_image = models.ForeignKey(
@@ -115,17 +107,11 @@ Article.search_fields = Page.search_fields + (
     index.SearchField('body'),
 )
 
-class BaseBlockArticle(Page, ArticleMixin):
+class BlockArticle(Page, ArticleMixin):
     """
     Article built with multiple types of blocks.
     Blocks can be repeated and/or combined in any way.
     """
-
-    class Meta:
-        abstract = True
-
-
-class BlockArticle(BaseBlockArticle):
     tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
     body = StreamField(CommonEditingBlock())
 
@@ -141,4 +127,4 @@ BlockArticle.settings_panels = Page.settings_panels + [
 BlockArticle.search_fields = Page.search_fields + (
     index.SearchField('subtitle'),
     index.SearchField('body'),
-)    
+)
