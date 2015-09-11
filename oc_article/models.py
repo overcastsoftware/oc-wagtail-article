@@ -86,20 +86,7 @@ class BaseArticle(Page, ArticleMixin):
     class Meta:
         abstract = True
 
-    content_panels = BASE_ARTICLE_CONTENT_PANELS + [
-        FieldPanel('tags'),
-        ImageChooserPanel('header_image'),
-        FieldPanel('body'),
-    ]
 
-    settings_panels = Page.settings_panels + [
-        FieldPanel('styles_override', widget=forms.widgets.Textarea({'rows':10})),
-    ]
-
-    search_fields = Page.search_fields + (
-        index.SearchField('subtitle'),
-        index.SearchField('body'),
-    )
 
 
 class Article(BaseArticle):
@@ -113,6 +100,20 @@ class Article(BaseArticle):
         related_name='+'
     )
 
+Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+    FieldPanel('tags'),
+    ImageChooserPanel('header_image'),
+    FieldPanel('body'),
+]
+
+Article.settings_panels = Page.settings_panels + [
+    FieldPanel('styles_override', widget=forms.widgets.Textarea({'rows':10})),
+]
+
+Article.search_fields = Page.search_fields + (
+    index.SearchField('subtitle'),
+    index.SearchField('body'),
+)
 
 class BaseBlockArticle(Page, ArticleMixin):
     """
@@ -124,20 +125,20 @@ class BaseBlockArticle(Page, ArticleMixin):
         abstract = True
 
 
-    content_panels = BASE_ARTICLE_CONTENT_PANELS + [
-        FieldPanel('tags'),
-        StreamFieldPanel('body'),
-    ]
-
-    settings_panels = Page.settings_panels + [
-        FieldPanel('styles_override'),
-    ]
-
-    search_fields = Page.search_fields + (
-        index.SearchField('subtitle'),
-        index.SearchField('body'),
-    )
-
 class BlockArticle(BaseBlockArticle):
     tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
     body = StreamField(CommonEditingBlock())
+
+BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+    FieldPanel('tags'),
+    StreamFieldPanel('body'),
+]
+
+BlockArticle.settings_panels = Page.settings_panels + [
+    FieldPanel('styles_override'),
+]
+
+BlockArticle.search_fields = Page.search_fields + (
+    index.SearchField('subtitle'),
+    index.SearchField('body'),
+)    
