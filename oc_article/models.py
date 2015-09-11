@@ -118,7 +118,7 @@ class BlockArticle(Page, ArticleMixin):
             ('images', blocks.ListBlock(blocks.StructBlock([
                 ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
                 ('caption', blocks.CharBlock(required=False)),
-                ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image')), required=True)),
+                ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image'), ('full_width_content_image', 'Full width content image')), required=True)),
             ]))),
             ('block_classes', blocks.CharBlock(required=False)),
         ], icon='image')),
