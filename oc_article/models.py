@@ -78,11 +78,10 @@ BASE_ARTICLE_CONTENT_PANELS = [
 ]
 
 
-class Article(Page, ArticleMixin):
+class BaseArticle(Page, ArticleMixin):
     """
     Basic article with a rich text editor for body.
     """
-    tags = ClusterTaggableManager(through=ArticleTag, blank=True)
     body = RichTextField(blank=True)
     header_image = models.ForeignKey(
         'wagtailimages.Image',
@@ -92,8 +91,8 @@ class Article(Page, ArticleMixin):
         related_name='+'
     )
 
-    # class Meta:
-    #     abstract = True
+    class Meta:
+        abstract = True
 
     content_panels = BASE_ARTICLE_CONTENT_PANELS + [
         FieldPanel('tags'),
@@ -111,16 +110,20 @@ class Article(Page, ArticleMixin):
     )
 
 
-class BlockArticle(Page, ArticleMixin):
+class Article(BaseArticle):
+    tags = ClusterTaggableManager(through=ArticleTag, blank=True)
+
+
+class BaseBlockArticle(Page, ArticleMixin):
     """
     Article built with multiple types of blocks.
     Blocks can be repeated and/or combined in any way.
     """
-    tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
+    
     body = StreamField(CommonEditingBlock())
 
-    # class Meta:
-    #     abstract = True
+    class Meta:
+        abstract = True
 
 
     content_panels = BASE_ARTICLE_CONTENT_PANELS + [
@@ -136,3 +139,6 @@ class BlockArticle(Page, ArticleMixin):
         index.SearchField('subtitle'),
         index.SearchField('body'),
     )
+
+class BlockArticle(BaseBlockArticle):
+    tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
