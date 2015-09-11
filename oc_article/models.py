@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django import forms
 
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore import blocks
@@ -52,7 +53,6 @@ class Category(models.Model):
 
 register_snippet(Category)
 
-
 class ArticleMixin(models.Model):
     author = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date = models.DateField(null=True, blank=True)
@@ -98,7 +98,7 @@ Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
 ]
 
 Article.settings_panels = Page.settings_panels + [
-    FieldPanel('styles_override'),
+    FieldPanel('styles_override', widget=forms.widgets.Textarea({'rows':10})),
 ]
 
 Article.search_fields = Page.search_fields + (
