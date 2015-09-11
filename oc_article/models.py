@@ -82,14 +82,6 @@ class BaseArticle(Page, ArticleMixin):
     """
     Basic article with a rich text editor for body.
     """
-    body = RichTextField(blank=True)
-    header_image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
 
     class Meta:
         abstract = True
@@ -112,6 +104,14 @@ class BaseArticle(Page, ArticleMixin):
 
 class Article(BaseArticle):
     tags = ClusterTaggableManager(through=ArticleTag, blank=True)
+    body = RichTextField(blank=True)
+    header_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
 
 class BaseBlockArticle(Page, ArticleMixin):
@@ -119,8 +119,6 @@ class BaseBlockArticle(Page, ArticleMixin):
     Article built with multiple types of blocks.
     Blocks can be repeated and/or combined in any way.
     """
-    
-    body = StreamField(CommonEditingBlock())
 
     class Meta:
         abstract = True
@@ -142,3 +140,4 @@ class BaseBlockArticle(Page, ArticleMixin):
 
 class BlockArticle(BaseBlockArticle):
     tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
+    body = StreamField(CommonEditingBlock())
