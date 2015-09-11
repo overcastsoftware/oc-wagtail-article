@@ -21,6 +21,8 @@ from taggit.models import TaggedItemBase
 from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 
+from .blocks import CommonEditingBlock
+
 
 class ArticleTag(TaggedItemBase):
     content_object = ParentalKey('Article', null=True, blank=True, related_name="%(app_label)s_%(class)s_taggeditems")
@@ -90,21 +92,23 @@ class Article(Page, ArticleMixin):
         related_name='+'
     )
 
+    # class Meta:
+    #     abstract = True
 
-Article.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
-    FieldPanel('tags'),
-    ImageChooserPanel('header_image'),
-    FieldPanel('body'),
-]
+    content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+        FieldPanel('tags'),
+        ImageChooserPanel('header_image'),
+        FieldPanel('body'),
+    ]
 
-Article.settings_panels = Page.settings_panels + [
-    FieldPanel('styles_override', widget=forms.widgets.Textarea({'rows':10})),
-]
+    settings_panels = Page.settings_panels + [
+        FieldPanel('styles_override', widget=forms.widgets.Textarea({'rows':10})),
+    ]
 
-Article.search_fields = Page.search_fields + (
-    index.SearchField('subtitle'),
-    index.SearchField('body'),
-)
+    search_fields = Page.search_fields + (
+        index.SearchField('subtitle'),
+        index.SearchField('body'),
+    )
 
 
 class BlockArticle(Page, ArticleMixin):
@@ -113,45 +117,22 @@ class BlockArticle(Page, ArticleMixin):
     Blocks can be repeated and/or combined in any way.
     """
     tags = ClusterTaggableManager(through=BlockArticleTag, blank=True)
-    body = StreamField([
-        ('image_block', blocks.StructBlock([
-            ('images', blocks.ListBlock(blocks.StructBlock([
-                ('image', ImageChooserBlock(formats=['full-width', 'left', 'right'], required=True)),
-                ('caption', blocks.CharBlock(required=False)),
-                ('image_type', blocks.ChoiceBlock(choices=(('header_image', 'Header image'), ('content_image', 'Content image'), ('full_width_content_image', 'Full width content image')), required=True)),
-            ]))),
-            ('block_classes', blocks.CharBlock(required=False)),
-        ], icon='image')),
-        ('paragraph_block', blocks.StructBlock([
-            ('paragraph', blocks.RichTextBlock()),
-            ('block_classes', blocks.CharBlock(required=False)),
-        ], icon='bold')),
-        ('blockquote_block', blocks.StructBlock([
-            ('blockquote', blocks.CharBlock(classname="full blockquote")),
-            ('block_classes', blocks.CharBlock(required=False)),
-        ], icon='openquote')),
-        ('html', blocks.RawHTMLBlock()),
-        ('embed', EmbedBlock(icon='media')),
-        ('table_block', blocks.StructBlock([
-            ('table', blocks.TextBlock(rows=10, help_text=_(u'Enter your table as comma separated values, one line for each row.'))),
-            ('caption', blocks.CharBlock()),
-            ('header_row', blocks.BooleanBlock(required=False, help_text=_(u'Render first row as header if checked'))),
-            ('header_column', blocks.BooleanBlock(required=False, help_text=_(u'Render first column as header if checked'))),
-            ('block_classes', blocks.CharBlock(required=False)),
-        ]))
-    ])
+    body = StreamField(CommonEditingBlock())
+
+    # class Meta:
+    #     abstract = True
 
 
-BlockArticle.content_panels = BASE_ARTICLE_CONTENT_PANELS + [
-    FieldPanel('tags'),
-    StreamFieldPanel('body'),
-]
+    content_panels = BASE_ARTICLE_CONTENT_PANELS + [
+        FieldPanel('tags'),
+        StreamFieldPanel('body'),
+    ]
 
-BlockArticle.settings_panels = Page.settings_panels + [
-    FieldPanel('styles_override'),
-]
+    settings_panels = Page.settings_panels + [
+        FieldPanel('styles_override'),
+    ]
 
-BlockArticle.search_fields = Page.search_fields + (
-    index.SearchField('subtitle'),
-    index.SearchField('body'),
-)
+    search_fields = Page.search_fields + (
+        index.SearchField('subtitle'),
+        index.SearchField('body'),
+    )
