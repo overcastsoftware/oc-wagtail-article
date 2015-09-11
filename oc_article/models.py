@@ -137,7 +137,7 @@ class BlockArticle(Page, ArticleMixin):
             ('caption', blocks.CharBlock()),
             ('header_row', blocks.BooleanBlock(required=False, help_text=_(u'Render first row as header if checked'))),
             ('header_column', blocks.BooleanBlock(required=False, help_text=_(u'Render first column as header if checked'))),
-            ('block_classes', blocks.CharBlock()),
+            ('block_classes', blocks.CharBlock(required=False)),
         ]))
     ])
 
